@@ -14,10 +14,16 @@ def scrape():
     with requests.Session() as session:
         session.headers.update({'User-Agent': 'Mozilla/5.0'})
         
-        # 1. Login
+        # 1. Login Logic
         login_page = session.get(LOGIN_URL)
         login_soup = BeautifulSoup(login_page.text, 'html.parser')
-        csrf_token = login_soup.find('input', {'name': 'csrf'}).get('value')
+        
+        csrf_tag = login_soup.find('input', {'name': 'csrf'})
+        if not csrf_tag:
+            print("Error: CSRF token not found.")
+            return
+            
+        csrf_token = csrf_tag.get('value')
 
         payload = {'csrf': csrf_token, 'email': USERNAME, 'password': PASSWORD}
         session.post(LOGIN_URL, data=payload)
@@ -27,27 +33,24 @@ def scrape():
         soup = BeautifulSoup(response.text, 'html.parser')
         stats = soup.find_all(class_="display-6")
         
+        # Ensure we have enough elements to reach index 13
         if len(stats) >= 14:
-            # Grab both stats
             messages_today = stats[8].get_text(strip=True)
-            active_now     = stats[13].get_text(strip=True) 
+            active_now = stats[13].get_text(strip=True) 
             
-            now = datetime.now()
-            filename = f"stats_{now.strftime('%Y_%m')}.csv"
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
             
-            # Create a row with both values
-            new_row = pd.DataFrame([[
-                now.strftime("%Y-%m-%d %H:%M"), 
-                messages_today, 
-                active_now
-            ]], columns=['Timestamp', 'Messages Today', 'Active Now'])
+            # 3. Save to the single 'stats.csv' file
+            new_row = pd.DataFrame([[timestamp, messages_today, active_now]], 
+                                   columns=['Timestamp', 'Messages Today', 'Active Now'])
             
-            # Append to file
-            file_exists = os.path.isfile(filename)
-            new_row.to_csv(filename, mode='a', index=False, header=not file_exists)
-            print(f"Logged: Messages({messages_today}), Active({active_now}) to {filename}")
+            file_exists = os.path.isfile('stats.csv')
+            # mode='a' appends to the file; header=not file_exists only adds the header once
+            new_row.to_csv('stats.csv', mode='a', index=False, header=not file_exists)
+            
+            print(f"Success! Logged at {timestamp} -> Messages: {messages_today}, Active: {active_now}")
         else:
-            print(f"Error: Found only {len(stats)} elements.")
+            print(f"Error: Found only {len(stats)} elements. Check if dashboard changed.")
 
 if __name__ == "__main__":
     scrape()
