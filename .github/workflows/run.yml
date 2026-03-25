@@ -30,6 +30,8 @@ jobs:
         run: |
           git config --global user.name "Scraper Bot"
           git config --global user.email "bot@github.com"
-          git add stats.csv schools.csv user_breakdown.csv
-          git commit -m "Update all user data" || exit 0
+          # Only add the two files your script actually creates
+          git add stats.csv user_breakdown.csv 
+          git commit -m "Update stats" || exit 0
           git push
+

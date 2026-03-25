@@ -79,7 +79,9 @@ def scrape_schools():
         # This will create a row for EVERY user (81 rows total each hour)
         file_name = 'user_breakdown.csv'
         file_exists = os.path.isfile(file_name)
-        df.to_csv(file_name, mode='w', index=False, header=not file_exists)
+        # Always write the header since we are overwriting the file every hour
+        df.to_csv(file_name, mode='w', index=False, header=True)
+
         
         print(f"Success! Tracked breakdown for {len(user_list)} users.")
 
