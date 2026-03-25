@@ -1,7 +1,7 @@
 name: Daily Scraper
 on:
   schedule:
-    - cron: '0 * * * *' # Runs at the start of every hour
+    - cron: '14 * * * *' # Runs at the start of every hour
   workflow_dispatch: # Keep this! It's great for manual testing.
 
 jobs:
@@ -30,7 +30,6 @@ jobs:
         run: |
           git config --global user.name "Scraper Bot"
           git config --global user.email "bot@github.com"
-          git add stats.csv
-          # The '|| exit 0' prevents the action from failing if there's nothing new to commit
-          git commit -m "Update stats" || exit 0
+          git add stats.csv schools.csv
+          git commit -m "Update all stats" || exit 0
           git push
