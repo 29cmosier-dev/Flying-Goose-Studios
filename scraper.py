@@ -9,7 +9,12 @@ URL = "https://hub.flyinggoosestudios.com"
 
 def scrape():
     # Make the request (using a header so it looks like a real browser)
-    headers = {'User-Agent': 'Mozilla/5.0'}
+    YOUR_COOKIE = "_ga=GA1.1.1983017726.1773850079; _ga_W5JW8H48BX=GS2.1.s1773850079$o1$g1$t1773850133$j6$l0$h0; _ga_00KXXS3RBH=GS2.1.s1773853947$o1$g1$t1773854055$j57$l0$h0; _ga_9WFJGF6YNK=GS2.1.s1773876243$o1$g0$t1773876262$j41$l0$h0; _ga=GA1.3.1983017726.1773850079; _ga_7FN7LEVWXD=GS2.1.s1773930711$o1$g0$t1773930721$j50$l0$h0; PHPSESSID=tdqptv0302s0aqd6qs9456k574"
+    
+    headers = {
+        'User-Agent': 'Mozilla/5.0',
+        'Cookie': YOUR_COOKIE
+    }
     response = requests.get(URL, headers=headers)
     soup = BeautifulSoup(response.text, 'html.parser')
 
