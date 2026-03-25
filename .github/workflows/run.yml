@@ -1,4 +1,4 @@
-name: Daily Scraper
+name: Daily Scraper 
 on:
   schedule:
     - cron: '14 * * * *' # Runs at the start of every hour

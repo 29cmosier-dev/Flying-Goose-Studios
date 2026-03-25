@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from datetime import datetime
 
+
 USERNAME = "ziggy"
 PASSWORD = os.getenv('STUDIO_PASS')
 LOGIN_URL = "https://hub.flyinggoosestudios.com/?route=login"
