@@ -5,7 +5,7 @@ from datetime import datetime
 import os
 
 # 1. The PHP Dashboard URL
-URL = "https://hub.flyinggoosestudios.com"
+URL = "https://hub.flyinggoosestudios.com/?route=admin.dashboard"
 
 def scrape():
     # Make the request (using a header so it looks like a real browser)
