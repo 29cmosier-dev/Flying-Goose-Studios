@@ -15,48 +15,36 @@ def scrape():
     with requests.Session() as session:
         session.headers.update({'User-Agent': 'Mozilla/5.0'})
         
-        # 1. GET the login page to find the CSRF token
+        # 1. Login Logic
         login_page = session.get(LOGIN_URL)
         login_soup = BeautifulSoup(login_page.text, 'html.parser')
-        
-        # Find the value of <input name="csrf" ...>
-        csrf_input = login_soup.find('input', {'name': 'csrf'})
-        if not csrf_input:
-            print("Could not find CSRF token. Check if the login URL is correct.")
-            return
-            
-        csrf_token = csrf_input.get('value')
+        csrf_token = login_soup.find('input', {'name': 'csrf'}).get('value')
 
-        # 2. POST to login
-        payload = {
-            'csrf': csrf_token,
-            'email': USERNAME,    
-            'password': PASSWORD  
-        }
-        
+        payload = {'csrf': csrf_token, 'email': USERNAME, 'password': PASSWORD}
         session.post(LOGIN_URL, data=payload)
         
-        # 3. Access Dashboard
+        # 2. Scrape Dashboard
         response = session.get(DASHBOARD_URL)
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        # 4. Find the stats
         stats = soup.find_all(class_="display-6")
         
-        if len(stats) > 8:
-            # Grab the 9th item (index 8)
-            messages_today = stats[8].get_text(strip=True)
+        if len(stats) >= 15:
+            # Capturing "Active Now" (verify the index is correct based on your layout)
+            active_now = stats[13].get_text(strip=True) 
             
-            # Create DataFrame
-            new_data = pd.DataFrame([[datetime.now().strftime("%Y-%m-%d %H:%M"), messages_today]], 
-                                    columns=['Timestamp', 'Messages'])
+            now = datetime.now()
+            # File name updates monthly: stats_2026_03.csv
+            filename = f"stats_{now.strftime('%Y_%m')}.csv"
             
-            # Save/Append to CSV
-            file_exists = os.path.isfile('stats.csv')
-            new_data.to_csv('stats.csv', mode='a', index=False, header=not file_exists)
-            print(f"Success: Captured {messages_today}")
+            new_row = pd.DataFrame([[now.strftime("%Y-%m-%d %H:%M"), active_now]], 
+                                   columns=['Timestamp', 'Active Now'])
+            
+            # Append to the monthly file
+            file_exists = os.path.isfile(filename)
+            new_row.to_csv(filename, mode='a', index=False, header=not file_exists)
+            print(f"Logged {active_now} to {filename}")
         else:
-            print(f"Login failed or layout changed. Found {len(stats)} stat elements.")
+            print(f"Error: Found {len(stats)} elements.")
 
 if __name__ == "__main__":
     scrape()
