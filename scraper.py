@@ -6,10 +6,11 @@ from datetime import datetime
 
 USERNAME = "ziggy"
 PASSWORD = "ZIGGYADMIN"
+LOGIN_URL = "https://hub.flyinggoosestudios.com/?route=login"
+DASHBOARD_URL = "https://hub.flyinggoosestudios.com/?route=admin.dashboard"
+USERS_URL = "https://hub.flyinggoosestudios.com/?route=admin.users"
 
 def scrape():
-    LOGIN_URL = "https://hub.flyinggoosestudios.com/?route=login"
-    DASHBOARD_URL = "https://hub.flyinggoosestudios.com/?route=admin.dashboard"
     
     with requests.Session() as session:
         session.headers.update({'User-Agent': 'Mozilla/5.0'})
@@ -38,41 +39,50 @@ def scrape():
             print(f"Logged Dashboard: {msg_today} | {active_now}")
 
 def scrape_schools():
-    LOGIN_URL = "https://hub.flyinggoosestudios.com/?route=login"
-    USERS_URL = "https://hub.flyinggoosestudios.com/?route=admin.users"
     
     with requests.Session() as session:
-        session.headers.update({'User-Agent': 'Mozilla/5.0'})
-        
-        # 1. Login
+        # 1. Login (same as your current code)
         login_soup = BeautifulSoup(session.get(LOGIN_URL).text, 'html.parser')
         csrf_token = login_soup.find('input', {'name': 'csrf'}).get('value')
         session.post(LOGIN_URL, data={'csrf': csrf_token, 'email': USERNAME, 'password': PASSWORD})
 
-        # 2. Get Users
+        # 2. Scrape Users
         soup = BeautifulSoup(session.get(USERS_URL).text, 'html.parser')
         cards = soup.find_all(class_="card-glass")
-        school_counts = {}
+        
+        user_list = []
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
 
         for card in cards:
-            # We look for the div that actually contains the " • " symbol
+            # A. Get Role (Student, Staff, etc.)
+            role_badge = card.find(class_="badge")
+            role = role_badge.get_text(strip=True) if role_badge else "User"
+
+            # B. Get School and Grade
+            school = "Other/Staff"
+            grade = "N/A"
+            
             details = card.find_all(class_="small text-muted")
             for d in details:
                 text = d.get_text(strip=True)
                 if "•" in text:
-                    school_name = text.split('•')[0].strip()
-                    school_counts[school_name] = school_counts.get(school_name, 0) + 1
-                    break # Stop looking at this card once we find the school
-
-        # 3. Save
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-        if school_counts:
-            data = [[timestamp, school, count] for school, count in school_counts.items()]
-            df = pd.DataFrame(data, columns=['Timestamp', 'School', 'Count'])
+                    parts = text.split("•")
+                    school = parts[0].strip()
+                    grade = parts[1].strip()
+                    break
             
-            file_exists = os.path.isfile('schools.csv')
-            df.to_csv('schools.csv', mode='a', index=False, header=not file_exists)
-            print(f"Successfully tracked {len(school_counts)} schools.")
+            user_list.append([timestamp, role, school, grade])
+
+        # 3. Save to a NEW file: user_breakdown.csv
+        df = pd.DataFrame(user_list, columns=['Timestamp', 'Role', 'School', 'Grade'])
+        
+        # This will create a row for EVERY user (81 rows total each hour)
+        file_name = 'user_breakdown.csv'
+        file_exists = os.path.isfile(file_name)
+        df.to_csv(file_name, mode='a', index=False, header=not file_exists)
+        
+        print(f"Success! Tracked breakdown for {len(user_list)} users.")
+
 
 if __name__ == "__main__":
     scrape() 
