@@ -12,32 +12,59 @@ DASHBOARD_URL = "https://hub.flyinggoosestudios.com/?route=admin.dashboard"
 USERS_URL = "https://hub.flyinggoosestudios.com/?route=admin.users"
 
 def scrape():
-    
+    print("--- Starting Scrape ---")
     with requests.Session() as session:
         session.headers.update({'User-Agent': 'Mozilla/5.0'})
         
-        # 1. Login
-        login_soup = BeautifulSoup(session.get(LOGIN_URL).text, 'html.parser')
-        csrf_tag = login_soup.find('input', {'name': 'csrf'})
-        if not csrf_tag: return
-        csrf_token = csrf_tag.get('value')
-
-        session.post(LOGIN_URL, data={'csrf': csrf_token, 'email': USERNAME, 'password': PASSWORD})
+        # 1. Login Debugging
+        print(f"Attempting login to: {LOGIN_URL}")
+        response = session.get(LOGIN_URL)
+        print(f"Login Page Load: {response.status_code}") # Should be 200
         
-        # 2. Scrape Dashboard
-        stats = BeautifulSoup(session.get(DASHBOARD_URL).text, 'html.parser').find_all(class_="display-6")
+        login_soup = BeautifulSoup(response.text, 'html.parser')
+        csrf_tag = login_soup.find('input', {'name': 'csrf'})
+        
+        if not csrf_tag:
+            print("CRITICAL ERROR: CSRF token not found. The login page structure might have changed.")
+            return
+            
+        csrf_token = csrf_tag.get('value')
+        print(f"CSRF Token acquired: {csrf_token[:5]}...") # Log start of token for safety
+        
+        login_data = {'csrf': csrf_token, 'email': USERNAME, 'password': PASSWORD}
+        login_post = session.post(LOGIN_URL, data=login_data)
+        print(f"Login Post Status: {login_post.status_code}")
+        
+        # 2. Dashboard Debugging
+        print(f"Fetching Dashboard: {DASHBOARD_URL}")
+        dash_response = session.get(DASHBOARD_URL)
+        dash_soup = BeautifulSoup(dash_response.text, 'html.parser')
+        
+        # Find all stats and log how many were found
+        stats = dash_soup.find_all(class_='display-6')
+        print(f"DEBUG: Found {len(stats)} elements with class 'display-6'")
         
         if len(stats) >= 14:
             msg_today = stats[8].get_text(strip=True)
             active_now = stats[13].get_text(strip=True)
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+            print(f"SUCCESS: Data captured -> Messages: {msg_today}, Active: {active_now}")
             
+            timestamp = datetime.now().strftime('%Y-%m-%d %H:%M')
             new_data = pd.DataFrame([[timestamp, msg_today, active_now]], 
-                                   columns=['Timestamp', 'Messages Today', 'Active Now'])
+                                    columns=['Timestamp', 'Messages Today', 'Active Now'])
             
-            file_exists = os.path.isfile('stats.csv')
-            new_data.to_csv('stats.csv', mode='a', index=False, header=not file_exists)
-            print(f"Logged Dashboard: {msg_today} | {active_now}")
+            # 3. File System Debugging
+            file_path = 'stats.csv'
+            file_exists = os.path.isfile(file_path)
+            print(f"File '{file_path}' exists in runner: {file_exists}")
+            
+            new_data.to_csv(file_path, mode='a', index=False, header=not file_exists)
+            print(f"File '{file_path}' updated successfully.")
+        else:
+            print("ERROR: Not enough 'display-6' elements found. Did the dashboard layout change?")
+            # Optional: Print the first 500 characters of the page to see what we actually got
+            # print(dash_response.text[:500]) 
+
 
 def scrape_schools():
     

@@ -13,10 +13,10 @@ jobs:
       
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3 # Updated to v3 (more stable)
+        uses: actions/checkout@v4 # Updated to v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4 # Updated to v4
+        uses: actions/setup-python@v5 # Updated to v5
         with:
           python-version: '3.9'
 
@@ -24,7 +24,10 @@ jobs:
         run: pip install requests beautifulsoup4 pandas
 
       - name: Run scraper
+        env:
+          STUDIO_PASS: ${{ secrets.STUDIO_PASS }} # This maps the secret to os.getenv
         run: python scraper.py
+
 
       - name: Commit and push changes
         run: |
