@@ -47,7 +47,7 @@ def scrape():
         if len(stats) >= 14:
             msg_today = stats[8].get_text(strip=True)
             active_now = stats[13].get_text(strip=True)
-            total_users = stats[1].get_text(strip=True)
+            total_users = stats[0].get_text(strip=True)
             print(f"SUCCESS: Data captured -> Messages: {msg_today}, Active: {active_now}, Total Users: {total_users}")
             
             timestamp = datetime.now().strftime('%Y-%m-%d %H:%M')
