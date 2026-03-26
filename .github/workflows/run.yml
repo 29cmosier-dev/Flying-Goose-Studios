@@ -33,7 +33,7 @@ jobs:
         run: |
           git config --global user.name "Scraper Bot"
           git config --global user.email "bot@github.com"
-          git pull origin main --rebase  # <--- ADD THIS LINE
+          git pull origin main --rebase
           git add stats.csv user_breakdown.csv 
           git commit -m "Update stats" || exit 0
           git push
