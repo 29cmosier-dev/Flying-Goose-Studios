@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Center</title>
+    <!-- Updated Bootstrap to valid 5.3.3 version -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <style>
+        .help-container { /* Fixed typo: contaior -> container */
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+        .help-card {
+            padding: 2rem;
+            border-radius: 12px;
+            background-color: rgba(12, 16, 23, 0.9);
+            color: whitesmoke;
+        }
+        body { padding: 4rem; }
+        .hidden-toggle {
+            background-color: transparent;
+            border: none;
+            text-align: left;
+            color: whitesmoke;
+            padding: 0;
+        }
+        .hidden-ans { display: none; }
+        .show { display: block; } /* Class to toggle visibility */
+    </style>
+</head>
+<body>
+    <div class="help-container">
+        <div class="help-card card card-glass">
+            <h3>How do I post a moment?</h3>
+            <button class="hidden-toggle">View answer</button>
+            <div class="hidden-ans">
+                <hr>
+                <p>If you want to post a moment, navigate to the moments page, then, on the right of the screen you should see an area where you can submit your own moment. After you click submit, our team will take some time to reveiw it, and will either approve it or delete it. This process may take up to 24 hours. </p>
+            </div>
+        </div>
+        <div class="help-card card card-glass">
+            <h3>Why are my chats not appearing in my chats list?</h3>
+            <button class="hidden-toggle">View answer</button>
+            <div class="hidden-ans">
+                <hr>
+                <p>The reason why you are not seeing your chats could be because:</p>
+                <h5>The chat was deleted</h5>
+                <p>Occasionaly, our admins/moderators may delete chats to ensure community saftey.</p>
+                <hr>
+                <h5>You are not friends with the user you are trying to chat with</h5>
+                <p>Another reason you may not see your chat is beacause you are not friends with the user you are trying to chat with. Please become friends with that user first, by navigating to the friends page and either sharing your friend code with your friend, or asking your friend for their friend code.</p>
+            </div>
+        </div>
+        <div class="help-card card card-glass">
+            <h3>Question</h3>
+            <button class="hidden-toggle">View answer</button>
+            <div class="hidden-ans">
+                <hr>
+                <p>Answer</p>
+            </div>
+        </div>
+        <div class="help-card card card-glass">
+            <h3>Question</h3>
+            <button class="hidden-toggle">View answer</button>
+            <div class="hidden-ans">
+                <hr>
+                <p>Answer</p>
+            </div>
+        </div>
+        <div class="help-card card card-glass">
+            <h3>Question</h3>
+            <button class="hidden-toggle">View answer</button>
+            <div class="hidden-ans">
+                <hr>
+                <p>Answer</p>
+            </div>
+        </div>
+        <div class="help-card card card-glass">
+            <h3>Question</h3>
+            <button class="hidden-toggle">View answer</button>
+            <div class="hidden-ans">
+                <hr>
+                <p>Answer</p>
+            </div>
+        </div>
+        <div class="help-card card card-glass">
+            <h3>Question</h3>
+            <button class="hidden-toggle">View answer</button>
+            <div class="hidden-ans">
+                <hr>
+                <p>Answer</p>
+            </div>
+        </div>
+        <div class="help-card card card-glass">
+            <h3>Question</h3>
+            <button class="hidden-toggle">View answer</button>
+            <div class="hidden-ans">
+                <hr>
+                <p>Answer</p>
+            </div>
+        </div>
+        <div class="help-card card card-glass">
+            <h3>Question</h3>
+            <button class="hidden-toggle">View answer</button>
+            <div class="hidden-ans">
+                <hr>
+                <p>Answer</p>
+            </div>
+        </div>
+    </div>s
+    <script>
+        // Use querySelectorAll to get all buttons
+        const buttons = document.querySelectorAll('.hidden-toggle');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Find the next element sibling (the answer div)
+                const answer = button.nextElementSibling;
+                answer.classList.toggle('show');
+                
+                // Optional: Change button text
+                button.textContent = answer.classList.contains('show') ? 'Hide answer' : 'View answer';
+            });
+        });
+    </script>
+</body>
+</html>
