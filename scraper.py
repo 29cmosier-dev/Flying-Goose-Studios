@@ -45,23 +45,28 @@ def run_all():
 def scrape_stats(session):
     dash_response = session.get(DASHBOARD_URL)
     dash_soup = BeautifulSoup(dash_response.text, 'html.parser')
-    stats = dash_soup.find_all(class_='display-6')
     
-    if len(stats) >= 14:
-        msg_today = stats[8].get_text(strip=True)
-        active_now = stats[13].get_text(strip=True)
-        total_users = stats[0].get_text(strip=True)
-        
-        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M')
-        new_data = pd.DataFrame([[timestamp, msg_today, active_now, total_users]], 
-                                columns=['Timestamp', 'Messages Today', 'Active Now', 'Total Users'])
-        
-        file_path = 'stats.csv'
-        file_exists = os.path.isfile(file_path)
-        new_data.to_csv(file_path, mode='a', index=False, header=not file_exists)
-        print(f"SUCCESS: Dashboard stats updated ({total_users} users).")
-    else:
-        print("ERROR: Dashboard layout changed or data missing.")
+    # This helper finds the number based on the heading text
+    def get_val(label):
+        header = dash_soup.find('h6', string=label)
+        if header:
+            # The number is in the div with class 'display-6' right after the <h6>
+            return header.find_next(class_='display-6').get_text(strip=True)
+        return "0"
+
+    # Now it doesn't matter what order they are in!
+    data = {
+        "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "Total Users": get_val("Users"),
+        "Msgs Today": get_val("Chat Messages Today"),
+        "Active Now": get_val("Active Now"),
+        "Visitors Today": get_val("Visitors Today")
+    }
+    
+    df = pd.DataFrame([data])
+    print(df.to_string(index=False))
+    return df
+
 
 def scrape_users(session):
     response = session.get(USERS_URL)
