@@ -40,7 +40,7 @@ def run_all():
         scrape_stats(session)
         
         # 4. Task 2: Scrape School Breakdown
-        scrape_schools(session)
+        scrape_users(session)
 
 def scrape_stats(session):
     dash_response = session.get(DASHBOARD_URL)
@@ -63,31 +63,41 @@ def scrape_stats(session):
     else:
         print("ERROR: Dashboard layout changed or data missing.")
 
-def scrape_schools(session):
-    soup = BeautifulSoup(session.get(USERS_URL).text, 'html.parser')
-    cards = soup.find_all(class_="admin-user-card")
+def scrape_users(session):
+    response = session.get(USERS_URL)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    
+    # Find all user cards
+    user_cards = soup.find_all(class_='admin-user-card')
     
     user_list = []
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-
-    for card in cards:
-        role_badge = card.find(class_="badge")
-        role = role_badge.get_text(strip=True) if role_badge else "User"
-
-        school, grade = "Other/Staff", "N/A"
-        details = card.find_all(class_="admin-user-card-copy mt-1")
-        for d in details:
-            text = d.get_text(strip=True)
-            if "•" in text:
-                parts = text.split("•")
-                school, grade = parts[0].strip(), parts[1].strip()
-                break
+    
+    for card in user_cards:
+        # Extract data using the new specific classes
+        name = card.find(class_='fw-semibold').get_text(strip=True)
+        handle = card.find(class_='text-muted').get_text(strip=True)
         
-        user_list.append([timestamp, role, school, grade])
+        # 'admin-user-card-copy' is used for both Email and School/Grade
+        details = card.find_all(class_='admin-user-card-copy')
+        email = details[0].get_text(strip=True) if len(details) > 0 else "N/A"
+        school_info = details[1].get_text(strip=True) if len(details) > 1 else "N/A"
+        
+        # Extract meta values (Birthday, Age, Last Login, etc.)
+        meta_values = [v.get_text(strip=True) for v in card.find_all(class_='admin-user-mini-value')]
+        
+        user_list.append({
+            "Name": name,
+            "Handle": handle,
+            "Email": email,
+            "School": school_info,
+            "Last Login": meta_values[2] if len(meta_values) > 2 else "N/A"
+        })
+    
+    # Convert to DataFrame
+    df = pd.DataFrame(user_list)
+    print(df.head())
+    return df
 
-    df = pd.DataFrame(user_list, columns=['Timestamp', 'Role', 'School', 'Grade'])
-    df.to_csv('user_breakdown.csv', mode='w', index=False, header=True)
-    print(f"SUCCESS: School breakdown updated ({len(user_list)} entries).")
 
 if __name__ == "__main__":
     run_all()
