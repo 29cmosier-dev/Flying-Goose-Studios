@@ -30,27 +30,40 @@ def run_all():
         print(f"Fetching login page: {LOGIN_URL}")
         response = session.get(LOGIN_URL)
         login_soup = BeautifulSoup(response.text, 'html.parser')
-        
-        csrf_tag = login_soup.find('input', {'name': 'csrf'})
-        if not csrf_tag:
-            print("CRITICAL ERROR: CSRF token not found on login page.")
-            return
-            
-        csrf_token = csrf_tag.get('value')
-        print(f"CSRF Token acquired: {csrf_token[:8]}...")
 
-        # 1. Acquire the token
+        # Find the login form - this ensures we get all hidden security fields
+        login_form = login_soup.find('form')
+        if not login_form:
+            print("CRITICAL ERROR: Login form not found.")
+            return
+
+        # Extract all hidden inputs automatically
+        login_data = {tag.get('name'): tag.get('value') for tag in login_form.find_all('input', type='hidden')}
+        
+        # Manually add the credentials
+        login_data['email'] = USERNAME
+        login_data['password'] = PASSWORD
+
+        print(f"Submitting payload with keys: {list(login_data.keys())}")
+
+        # Crucial: The site likely checks if you're coming from the login page
+        session.headers.update({'Referer': LOGIN_URL})
+
+        login_post = session.post(LOGIN_URL, data=login_data)
+        print(f"Post-Login URL: {login_post.url}")
+
         response = session.get(LOGIN_URL)
         login_soup = BeautifulSoup(response.text, 'html.parser')
         csrf_tag = login_soup.find('input', {'name': 'csrf'})
         csrf_token = csrf_tag.get('value')
+
 
         # 2. Setup the headers and data
         # Explicitly set the Referer to let the site know where the request came from
         session.headers.update({'Referer': LOGIN_URL})
 
         login_data = {
-            'csrf': csrf_token, 
+            'csrf': csrf_token,
             'email': USERNAME, 
             'password': PASSWORD
         }
