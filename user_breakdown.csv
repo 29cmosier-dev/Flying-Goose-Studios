@@ -1,4 +1,6 @@
 Role,School,Grade
+Admin,N/A,N/A
+Student,N/A,N/A
 Student,N/A,N/A
 Teacher,Syracuse Junior High,Staff
 Student,Syracuse Junior High,Grade 8
@@ -107,6 +109,6 @@ Student,Syracuse Junior High,Grade 9
 Student,Syracuse Junior High,Grade 9
 Student,Syracuse Junior High,Grade 8
 Student,Syracuse Junior High,Grade 9
-Admin+,Syracuse Junior High,Grade 9
-Admin+,Syracuse Junior High,Grade 9
-Admin+,Syracuse Junior High,Grade 9
+Admin,Syracuse Junior High,Grade 9
+Admin,Syracuse Junior High,Grade 9
+Admin,Syracuse Junior High,Grade 9
