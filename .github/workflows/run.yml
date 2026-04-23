@@ -1,7 +1,7 @@
 name: Daily Scraper 
 on:
   schedule:
-   - cron: '14 * * * *' # Runs at the start of every hour
+    - cron: '14 * * * *' # Runs at the start of every hour
   workflow_dispatch: # Keep this! It's great for manual testing.
 
 jobs:
