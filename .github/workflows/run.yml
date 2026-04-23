@@ -29,17 +29,16 @@ jobs:
         run: python scraper.py
 
 
-    - name: Commit changes
-      run: |
-        git config --global user.name "Scraper Bot"
-        git config --global user.email "bot@github.com"
-        git add stats.csv user_breakdown.csv
-        # Only commit if there are changes to avoid failing the workflow
-        git diff --quiet && git diff --staged --quiet || git commit -m "Update stats"
+      - name: Commit changes
+        run: |
+          git config --global user.name "Scraper Bot"
+          git config --global user.email "bot@github.com"
+          git add stats.csv user_breakdown.csv
+          git diff --quiet && git diff --staged --quiet || git commit -m "Update stats"
 
-    - name: Push changes
-      run: |
-        git pull origin main --rebase
-        git push
+      - name: Push changes
+        run: |
+          git pull origin main --rebase
+          git push
 
 
