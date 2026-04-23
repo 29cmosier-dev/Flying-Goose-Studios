@@ -71,6 +71,8 @@ def run_all():
         # 4. Verify Login Success
         if "login" in login_post.url:
             print("LOGIN FAILED: Still on login page. Check username/password.")
+            print("--- Login Response Snippet ---")
+            print(login_post.text[:2000]) # This will print the HTML of the failure page
             return
             
         print("Login Successful. Starting data collection...")
