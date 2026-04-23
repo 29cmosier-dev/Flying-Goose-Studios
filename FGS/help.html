@@ -1,129 +1,183 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Help Center</title>
-    <!-- Updated Bootstrap to valid 5.3.3 version -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<div>
     <style>
-        .help-container { /* Fixed typo: contaior -> container */
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+      .help-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+      }
+  
+      .help-card {
+        padding: 2rem;
+        border-radius: 12px;
+        background-color: rgba(12, 16, 23, 0.9);
+        color: whitesmoke;
+        display: flex;
+        flex-direction: column;
+      }
+  
+      @media (max-width: 768px) {
+        .help-container {
+          grid-template-columns: 1fr;
         }
-        .help-card {
-            padding: 2rem;
-            border-radius: 12px;
-            background-color: rgba(12, 16, 23, 0.9);
-            color: whitesmoke;
-        }
-        body { padding: 4rem; }
-        .hidden-toggle {
-            background-color: transparent;
-            border: none;
-            text-align: left;
-            color: whitesmoke;
-            padding: 0;
-        }
-        .hidden-ans { display: none; }
-        .show { display: block; } /* Class to toggle visibility */
+      }
+  
+      .hidden-ans {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+        /* Removed display:none to allow transition to work */
+      }
+  
+      .hidden-ans.show {
+        max-height: 1000px;
+        opacity: 1;
+        padding-top: 10px;
+      }
+  
+      .hidden-toggle {
+        cursor: pointer;
+        transition: opacity 0.2s;
+        width: fit-content;
+      }
+  
+      .hidden-toggle:hover {
+        opacity: 0.7;
+        text-decoration: underline;
+      }
     </style>
-</head>
-<body>
+  
     <div class="help-container">
-        <div class="help-card card card-glass">
-            <h3>How do I post a moment?</h3>
-            <button class="hidden-toggle">View answer</button>
-            <div class="hidden-ans">
-                <hr>
-                <p>If you want to post a moment, navigate to the moments page, then, on the right of the screen you should see an area where you can submit your own moment. After you click submit, our team will take some time to reveiw it, and will either approve it or delete it. This process may take up to 24 hours. </p>
-            </div>
-        </div>
-        <div class="help-card card card-glass">
-            <h3>Why are my chats not appearing in my chats list?</h3>
-            <button class="hidden-toggle">View answer</button>
-            <div class="hidden-ans">
-                <hr>
-                <p>The reason why you are not seeing your chats could be because:</p>
-                <h5>The chat was deleted</h5>
-                <p>Occasionaly, our admins/moderators may delete chats to ensure community saftey.</p>
-                <hr>
-                <h5>You are not friends with the user you are trying to chat with</h5>
-                <p>Another reason you may not see your chat is beacause you are not friends with the user you are trying to chat with. Please become friends with that user first, by navigating to the friends page and either sharing your friend code with your friend, or asking your friend for their friend code.</p>
-            </div>
-        </div>
-        <div class="help-card card card-glass">
-            <h3>Question</h3>
-            <button class="hidden-toggle">View answer</button>
-            <div class="hidden-ans">
-                <hr>
-                <p>Answer</p>
-            </div>
-        </div>
-        <div class="help-card card card-glass">
-            <h3>Question</h3>
-            <button class="hidden-toggle">View answer</button>
-            <div class="hidden-ans">
-                <hr>
-                <p>Answer</p>
-            </div>
-        </div>
-        <div class="help-card card card-glass">
-            <h3>Question</h3>
-            <button class="hidden-toggle">View answer</button>
-            <div class="hidden-ans">
-                <hr>
-                <p>Answer</p>
-            </div>
-        </div>
-        <div class="help-card card card-glass">
-            <h3>Question</h3>
-            <button class="hidden-toggle">View answer</button>
-            <div class="hidden-ans">
-                <hr>
-                <p>Answer</p>
-            </div>
-        </div>
-        <div class="help-card card card-glass">
-            <h3>Question</h3>
-            <button class="hidden-toggle">View answer</button>
-            <div class="hidden-ans">
-                <hr>
-                <p>Answer</p>
-            </div>
-        </div>
-        <div class="help-card card card-glass">
-            <h3>Question</h3>
-            <button class="hidden-toggle">View answer</button>
-            <div class="hidden-ans">
-                <hr>
-                <p>Answer</p>
-            </div>
-        </div>
-        <div class="help-card card card-glass">
-            <h3>Question</h3>
-            <button class="hidden-toggle">View answer</button>
-            <div class="hidden-ans">
-                <hr>
-                <p>Answer</p>
-            </div>
-        </div>
-    </div>s
-    <script>
-        // Use querySelectorAll to get all buttons
-        const buttons = document.querySelectorAll('.hidden-toggle');
+      <!-- Card 1 -->
+      <div class="help-card card card-glass">
+        <h3>How do I post a moment?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>If you want to post a moment, navigate to the moments page, then, on the right of the screen you should see an area where you can submit your own moment. After you click submit, our team will take some time to review it, and will either approve it or delete it. This process may take up to 24 hours.</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+  
+      <!-- Card 2 -->
+      <div class="help-card card card-glass">
+        <h3>Why are my chats not appearing in my chats list?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>The reason why you are not seeing your chats could be because:</p>
+            <h5>The chat was deleted</h5>
+            <p>Occasionally, our admins/moderators may delete chats to ensure community safety.</p>
+            <hr>
+            <h5>You are not friends with the user you are trying to chat with</h5>
+            <p>Another reason you may not see your chat is because you are not friends with the user you are trying to chat with. Please become friends with that user first, by navigating to the friends page and either sharing your friend code with your friend, or asking your friend for their friend code.</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+  
+      <!-- Card 3 -->
+      <div class="help-card card card-glass">
+        <h3>How do I add a friend?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>Click on your account dropdown in the top-right, and select 'Friends'. Then, you will see multiple ways to share your friend code or input your friend code!</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
 
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                // Find the next element sibling (the answer div)
-                const answer = button.nextElementSibling;
-                answer.classList.toggle('show');
-                
-                // Optional: Change button text
-                button.textContent = answer.classList.contains('show') ? 'Hide answer' : 'View answer';
-            });
+      <div class="help-card card card-glass">
+        <h3>What are the community rules for FGS?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>Our motto is "Be kind. Be cool." This means we do not tolerate bullying, harassment, or inappropriate content. Every message and post is part of shaping our space, so let’s keep it creative and positive for everyone!</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+
+      <div class="help-card card card-glass">
+        <h3>Is my personal information private?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>Of Coruse! We prioritize your privacy and do not share your account details or friend codes with anyone outside of the friends you choose to add. Remember to only share your friend code with people you know and trust.</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+
+      <div class="help-card card card-glass">
+        <h3>My Chat isn't updating. What should I do?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>FGS uses live chat that shouldn't need a refresh. If it seems stuck, try checking your internet connection or clearing your browser cache. If the problem persists, please let us know via the support link at the bottom of the page.</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+
+      <div class="help-card card card-glass">
+        <h3>Where can I see my friend code?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>You can find your unique friend code under your account dropdown in the 'Friends' section. This is what you’ll give to others so they can add you!</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+
+      <div class="help-card card card-glass">
+        <h3>How do I create a new Poll?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>To start a poll, go to the Polls page and look for the "Create Poll" button. You can add your question and as many options as you'd like, there is no limit to how many choices you can provide for the community to vote on!</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+
+      <div class="help-card card card-glass">
+        <h3>Where can I join the conversation?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>Check out the Discussions page! This is where community conversations happen. You can jump into an existing thread or start your own to share ideas with students from other schools.</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+
+      <div class="help-card card card-glass">
+        <h3>How does the "Food" section work?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>There's no menu to scroll through, just type in exactly what you’re craving! Once you enter your request, one of our chefs will get to work on serving up an image of that food. Please be patient, as there may be some long wait times.</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+
+      <div class="help-card card card-glass">
+        <h3>Can I share my own jokes?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>Yes! Jokes have their own dedicated page where you can submit them. Like Moments, all joke submissions go through an approval process by our team before they appear for the community.</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+
+      <div class="help-card card card-glass">
+        <h3>Do Discussions need approval?</h3>
+        <div class="hidden-ans">
+            <hr>
+            <p>Surprisingly, no! Unlike Moments and Jokes, Discussions do not require an approval process. You can jump right into a conversation or start a new thread instantly to connect with others.</p>
+          </div>
+        <button class="hidden-toggle card">View answer</button>
+      </div>
+
+    </div>
+  
+    <div style="width: 100%; text-align: center; padding: 1rem;">
+      <a href="https://flyinggoosestudios.com/?route=support">Can't find an answer? Ask it here!</a>
+    </div>
+  
+    <script>
+      document.querySelectorAll('.hidden-toggle').forEach(button => {
+        button.addEventListener('click', () => {
+          const answer = button.previousElementSibling;
+          const isShowing = answer.classList.toggle('show');
+          button.textContent = isShowing ? 'Hide answer' : 'View answer';
         });
+      });
     </script>
-</body>
-</html>
+  </div>
+  
