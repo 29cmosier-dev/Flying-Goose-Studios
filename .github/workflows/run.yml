@@ -37,8 +37,12 @@ jobs:
           git diff --quiet && git diff --staged --quiet || git commit -m "Update stats"
 
       - name: Push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git pull origin main --rebase
-          git push
+          # Use the built-in token to authenticate the push
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@://github.com{{ github.repository }}.git
+
 
 

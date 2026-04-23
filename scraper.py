@@ -55,8 +55,17 @@ def run_all():
         print("Login Successful! Starting data collection...")
         
         # 6. Pass the "kicked" session into your scrapers
-        scrape_stats(session)
-        scrape_users(session)
+        df_stats = scrape_stats(session)
+        df_users = scrape_users(session)
+
+        # SAVE THE FILES TO DISK (This is what was missing)
+        if df_stats is not None and not df_stats.empty:
+            df_stats.to_csv("stats.csv", index=False)
+            print("Saved stats.csv")
+            
+        if df_users is not None and not df_users.empty:
+            df_users.to_csv("user_breakdown.csv", index=False)
+            print("Saved user_breakdown.csv")
 
 
 def scrape_stats(session):
@@ -92,42 +101,42 @@ def scrape_users(session):
     print(f"\n--- Scraping Users: {USERS_URL} ---")
     response = session.get(USERS_URL)
     soup = BeautifulSoup(response.text, 'html.parser')
-    
     user_cards = soup.find_all(class_='admin-user-card')
     print(f"Found {len(user_cards)} user cards.")
     
     user_list = []
     for card in user_cards:
         try:
-            # 1. Role (The first badge: e.g., "Student")
+            # 1. Role - Get the text of the FIRST badge
             role_tag = card.find('span', class_='badge')
             role = role_tag.get_text(strip=True) if role_tag else "N/A"
 
-            # 2. School and Grade (Found in the div containing the "•" symbol)
+            # 2. School and Grade
             school, grade = "N/A", "N/A"
+            
+            # Find the specific div that contains the "•"
             location_div = card.find(lambda tag: tag.name == "div" and "•" in tag.text)
             
             if location_div:
-                parts = location_div.get_text(strip=True).split("•")
+                raw_text = location_div.get_text(strip=True)
+                parts = raw_text.split("•")
                 school = parts[0].strip()
-                grade = parts[1].strip() if len(parts) > 1 else "N/A"
-
+                # Ensure we don't accidentally grab "Teacher" as a grade
+                if len(parts) > 1:
+                    potential_grade = parts[1].strip()
+                    grade = potential_grade if "Grade" in potential_grade else "Staff/Other"
+            
             user_list.append({
                 "Role": role,
                 "School": school,
                 "Grade": grade
             })
-
         except Exception as e:
             print(f"Error parsing a card: {e}")
 
-
     df = pd.DataFrame(user_list)
-    if not df.empty:
-        print(df.head())
-    else:
-        print("User DataFrame is empty.")
     return df
+
 
 if __name__ == "__main__":
     run_all()
