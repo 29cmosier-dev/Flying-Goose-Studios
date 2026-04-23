@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import datetime
 import re
 
-USERNAME = "ziggy"
+USERNAME = "statsmonitor"
 PASSWORD = os.getenv('STUDIO_PASS')
 LOGIN_URL = "https://hub.flyinggoosestudios.com/?route=login"
 DASHBOARD_URL = "https://hub.flyinggoosestudios.com/?route=admin.dashboard"
