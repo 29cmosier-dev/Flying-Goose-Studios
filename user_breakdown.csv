@@ -1,4 +1,5 @@
 Role,School,Grade
+Student,N/A,N/A
 Admin,N/A,N/A
 Student,N/A,N/A
 Student,N/A,N/A
@@ -63,7 +64,7 @@ Student,Cook Elementary,Grade K-6
 Student,Syracuse Junior High,Grade 8
 Student,Syracuse Junior High,Grade 9
 Admin,Syracuse Junior High,Grade 9
-Student,Syracuse Junior High,Grade 9
+Admin,Syracuse Junior High,Grade 9
 Student,Syracuse Junior High,Grade 9
 Student,Syracuse Junior High,Grade 9
 Student,Syracuse Junior High,Grade 9
