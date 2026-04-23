@@ -58,10 +58,20 @@ def run_all():
         df_stats = scrape_stats(session)
         df_users = scrape_users(session)
 
-        # SAVE THE FILES TO DISK (This is what was missing)
         if df_stats is not None and not df_stats.empty:
-            df_stats.to_csv("stats.csv", index=False)
-            print("Saved stats.csv")
+            file_path = "stats.csv"
+        
+            if os.path.exists(file_path):
+                # Read the existing data
+                df_old = pd.read_csv(file_path)
+                # Add the new row to the bottom
+                df_combined = pd.concat([df_old, df_stats], ignore_index=True)
+                df_combined.to_csv(file_path, index=False)
+                print(f"Appended new stats to {file_path}")
+            else:
+                # If the file doesn't exist yet, just create it
+                df_stats.to_csv(file_path, index=False)
+                print(f"Created new {file_path}")
             
         if df_users is not None and not df_users.empty:
             df_users.to_csv("user_breakdown.csv", index=False)
