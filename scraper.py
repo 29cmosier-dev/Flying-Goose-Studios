@@ -111,7 +111,14 @@ def scrape_users(session):
     print(f"\n--- Scraping Users: {USERS_URL} ---")
     response = session.get(USERS_URL)
     soup = BeautifulSoup(response.text, 'html.parser')
-    user_cards = soup.find_all(class_='admin-user-card')
+    user_grid = soup.find(class_='admin-user-grid')
+    
+    if user_grid:
+        user_cards = user_grid.find_all(class_='admin-user-card')
+    else:
+        # Fallback if grid isn't found
+        user_cards = soup.find_all(class_='admin-user-card')
+        
     print(f"Found {len(user_cards)} user cards.")
     
     user_list = []
