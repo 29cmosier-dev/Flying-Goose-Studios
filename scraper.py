@@ -96,9 +96,9 @@ def scrape_stats(session):
 
     data = {
         "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "Total Users": get_val("Users"),
         "Msgs Today": get_val("Chat Messages Today"),
         "Active Now": get_val("Active Now"),
+        "Total Users": get_val("Users"),
         "Visitors Today": get_val("Visitors Today")
     }
     
