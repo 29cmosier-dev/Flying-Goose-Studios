@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MINI CRAFT - FGS Edition</title>
+    <style>
+        body { background: #1a1a1a; color: #ffcc00; font-family: 'Montserrat', sans-serif; text-align: center; overflow: hidden; }
+        #game-container { border: 4px solid #ffcc00; width: 600px; height: 400px; margin: 20px auto; position: relative; background: #000; }
+        #goose { position: absolute; font-size: 40px; cursor: pointer; transition: 0.1s; user-select: none; }
+        .netherite { position: absolute; width: 30px; height: 30px; background: #4d3a4d; border: 2px solid #2a1f2a; }
+        #ui { font-size: 20px; margin-top: 10px; }
+        .error-text { position: absolute; color: red; font-weight: bold; pointer-events: none; }
+    </style>
+</head>
+<body>
+    <h1>MINI CRAFT v1.0</h1>
+    <p>Guide the Goose to mine Netherite. Avoid Sam's Spelling Errors!</p>
+    
+    <div id="game-container" id="box">
+        <div id="goose">🪿</div>
+    </div>
+
+    <div id="ui">
+        Netherite Stacks: <span id="score">0</span> / 64 | 
+        Status: <span id="status">Active</span>
+    </div>
+
+    <script>
+        const goose = document.getElementById('goose');
+        const container = document.getElementById('game-container');
+        const scoreEl = document.getElementById('score');
+        let score = 0;
+
+        // Move Goose
+        container.addEventListener('mousemove', (e) => {
+            const rect = container.getBoundingClientRect();
+            goose.style.left = (e.clientX - rect.left - 20) + 'px';
+            goose.style.top = (e.clientY - rect.top - 20) + 'px';
+        });
+
+        // Spawn Netherite
+        function spawnNetherite() {
+            const block = document.createElement('div');
+            block.className = 'netherite';
+            block.style.left = Math.random() * 570 + 'px';
+            block.style.top = Math.random() * 370 + 'px';
+            container.appendChild(block);
+
+            block.addEventListener('mouseover', () => {
+                score++;
+                scoreEl.innerText = score;
+                block.remove();
+                if(score >= 64) alert("INVENTORY FULL! DAXTON HAS NO CHANCE.");
+            });
+        }
+
+        // Spawn "Spelling Errors" (The Obstacles)
+        function spawnError() {
+            const error = document.createElement('div');
+            error.className = 'error-text';
+            error.innerText = Math.random() > 0.5 ? "MINI CRAFT" : "MENCRAFT?";
+            error.style.left = Math.random() * 500 + 'px';
+            error.style.top = Math.random() * 370 + 'px';
+            container.appendChild(error);
+
+            setTimeout(() => {
+                const gooseRect = goose.getBoundingClientRect();
+                const errRect = error.getBoundingClientRect();
+
+                if (!(gooseRect.right < errRect.left || gooseRect.left > errRect.right || 
+                    gooseRect.bottom < errRect.top || gooseRect.top > errRect.bottom)) {
+                    document.getElementById('status').innerText = "REFRESH NEEDED!";
+                    score = 0;
+                    scoreEl.innerText = score;
+                }
+                error.remove();
+            }, 2000);
+        }
+
+        setInterval(spawnNetherite, 1500);
+        setInterval(spawnError, 1000);
+    </script>
+</body>
+</html>
