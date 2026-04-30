@@ -91,12 +91,18 @@ def scrape_stats(session):
     print(f"Page Title: {dash_soup.title.string if dash_soup.title else 'No Title'}")
 
     def get_val(label_text):
-        # Improved regex to be very loose with spacing
-        header = dash_soup.find('h6', string=re.compile(rf'.*{label_text}.*', re.I))
+        # 1. Find the header (h1-h6) that matches your label
+        header = dash_soup.find(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', '###'], string=re.compile(rf'^\s*{label_text}\s*$', re.I))
+        
         if header:
-            val_tag = header.find_next(class_='display-6')
-            return val_tag.get_text(strip=True) if val_tag else "0"
-        return "N/A"
+            # 2. Look for the very next div or span that contains a number
+            val_tag = header.find_next(lambda tag: tag.name in ['div', 'span', 'p', 'strong'] and any(c.isdigit() for c in tag.text))
+            if val_tag:
+                # Strip everything except numbers (removes commas/labels)
+                return re.sub(r'[^\d]', '', val_tag.get_text(strip=True))
+                
+        return "0" 
+
 
     data = {
         "Timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
